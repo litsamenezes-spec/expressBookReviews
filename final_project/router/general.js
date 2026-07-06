@@ -3,10 +3,8 @@ const axios = require('axios');
 
 const public_users = express.Router();
 
-// Base URL of your running server
-const baseURL = "http://localhost:5000"; // change port if needed
+const baseURL = "http://localhost:5000"; 
 
-// TASK 10: Get all books (async-await + axios)
 public_users.get('/', async function (req, res) {
     try {
         const response = await axios.get(`${baseURL}/`);
@@ -16,7 +14,6 @@ public_users.get('/', async function (req, res) {
     }
 });
 
-// TASK 11: Get book by ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
     try {
         const isbn = req.params.isbn;
@@ -27,7 +24,6 @@ public_users.get('/isbn/:isbn', async function (req, res) {
     }
 });
 
-// TASK 12: Get books by author
 public_users.get('/author/:author', async function (req, res) {
     try {
         const author = req.params.author;
@@ -38,7 +34,6 @@ public_users.get('/author/:author', async function (req, res) {
     }
 });
 
-// TASK 13: Get books by title
 public_users.get('/title/:title', async function (req, res) {
     try {
         const title = req.params.title;
