@@ -9,112 +9,63 @@ public_users.get('/', async (req, res) => {
     try {
         const response = await axios.get(`${baseURL}/`);
         return res.status(200).json(response.data);
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching books"
-        });
+    } catch {
+        return res.status(500).json({ message: "Error fetching books" });
     }
 });
 
 public_users.get('/isbn/:isbn', async (req, res) => {
-    const isbn = req.params.isbn;
-
     try {
-        const response = await axios.get(`${baseURL}/isbn/${isbn}`);
+        const response = await axios.get(`${baseURL}/`);
+        const books = response.data;
 
-        if (
-            !response.data ||
-            (typeof response.data === "object" && Object.keys(response.data).length === 0)
-        ) {
-            return res.status(404).json({
-                success: false,
-                message: `No book found with ISBN ${isbn}`
-            });
+        const book = books[req.params.isbn];
+
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
         }
 
-        return res.status(200).json(response.data);
-
-    } catch (error) {
-        if (error.response && error.response.status === 404) {
-            return res.status(404).json({
-                success: false,
-                message: `No book found with ISBN ${isbn}`
-            });
-        }
-
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching book by ISBN"
-        });
+        return res.status(200).json(book);
+    } catch {
+        return res.status(500).json({ message: "Error fetching book" });
     }
 });
 
 public_users.get('/author/:author', async (req, res) => {
-    const author = req.params.author;
-
     try {
-        const response = await axios.get(`${baseURL}/author/${author}`);
+        const response = await axios.get(`${baseURL}/`);
+        const books = response.data;
 
-        if (
-            !response.data ||
-            (Array.isArray(response.data) && response.data.length === 0) ||
-            (typeof response.data === "object" && !Array.isArray(response.data) && Object.keys(response.data).length === 0)
-        ) {
-            return res.status(404).json({
-                success: false,
-                message: `No books found for author '${author}'`
-            });
+        const result = Object.values(books).filter(
+            b => b.author.toLowerCase() === req.params.author.toLowerCase()
+        );
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No books found for author" });
         }
 
-        return res.status(200).json(response.data);
-
-    } catch (error) {
-        if (error.response && error.response.status === 404) {
-            return res.status(404).json({
-                success: false,
-                message: `No books found for author '${author}'`
-            });
-        }
-
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching books by author"
-        });
+        return res.status(200).json(result);
+    } catch {
+        return res.status(500).json({ message: "Error fetching books" });
     }
 });
 
 public_users.get('/title/:title', async (req, res) => {
-    const title = req.params.title;
-
     try {
-        const response = await axios.get(`${baseURL}/title/${title}`);
+        const response = await axios.get(`${baseURL}/`);
+        const books = response.data;
 
-        if (
-            !response.data ||
-            (Array.isArray(response.data) && response.data.length === 0) ||
-            (typeof response.data === "object" && !Array.isArray(response.data) && Object.keys(response.data).length === 0)
-        ) {
-            return res.status(404).json({
-                success: false,
-                message: `No books found with title '${title}'`
-            });
+        const result = Object.values(books).filter(
+            b => b.title.toLowerCase() === req.params.title.toLowerCase()
+        );
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No books found for title" });
         }
 
-        return res.status(200).json(response.data);
-
-    } catch (error) {
-        if (error.response && error.response.status === 404) {
-            return res.status(404).json({
-                success: false,
-                message: `No books found with title '${title}'`
-            });
-        }
-
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching books by title"
-        });
+        return res.status(200).json(result);
+    } catch {
+        return res.status(500).json({ message: "Error fetching books" });
     }
 });
 
